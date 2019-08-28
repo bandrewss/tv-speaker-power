@@ -1,8 +1,9 @@
-# TV Speaker Power
+TV Speaker Power
+================
 An Arduino listens for the TV remote power signal and flips a relay.
 
-### Wiring
-3 legged IR sensor
+# Wiring
+### 3 legged IR sensor
 - Ground
 - 5V
 - Signal Pin 13
