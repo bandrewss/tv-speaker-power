@@ -10,13 +10,14 @@
 #define RED_LED (4)
 #define GREEN_LED (5)
 #define RELAY_PIN (6)
-#define RECV_PIN (13)
+#define RECV_PIN (7)
 
 #define RED (0)
 #define GREEN (1)
 
 #define DEBOUNCE_TIME (200)
 #define POWER_CODE (0x61A0F00F)
+// other power code?: 0x438E0879
 
 static IRrecv recv(RECV_PIN);
 static decode_results results;
@@ -36,7 +37,12 @@ void override_button()
 #ifdef VERBOSE
     Serial.println("Button Pressed, Overriding");
 #endif
+
     toggle();
+
+#ifdef VERBOSE
+    Serial.print("\n");
+#endif
 }
 
 
@@ -47,12 +53,18 @@ void rg_toggle()
         digitalWrite(RED_LED, LOW);
         digitalWrite(GREEN_LED, HIGH);
         rg_state = GREEN;
+#ifdef VERBOSE
+        Serial.print("Light is now Green\n");
+#endif
     }
     else
     {
         digitalWrite(RED_LED, HIGH);
         digitalWrite(GREEN_LED, LOW);
         rg_state = RED;
+#ifdef VERBOSE
+        Serial.print("Light is now RED\n");
+#endif
     }
 }
 
@@ -63,6 +75,10 @@ void toggle()
 
     relay_state = !relay_state;
     digitalWrite(RELAY_PIN, relay_state);
+#ifdef VERBOSE
+        Serial.print("Relay is now ");
+        Serial.print(relay_state ? "On\n" : "Off\n");
+#endif
 }
 
 
@@ -71,6 +87,8 @@ void setup()
     Serial.begin(115200);
 #ifdef VERBOSE
     Serial.print("Starting\n");
+    Serial.print("Light is Red\n");
+    Serial.print("Relay is Off\n\n");
 #endif
 
     pinMode(RED_LED, OUTPUT);
@@ -100,6 +118,10 @@ void loop()
 
         if(results.value == POWER_CODE)
             toggle();
+
+#ifdef VERBOSE
+        Serial.print("\n");
+#endif
         
         recv.resume();
     }
